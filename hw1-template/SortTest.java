@@ -8,8 +8,16 @@ public class SortTest {
         int[] A2 = { 1, 3, 5, 7, 9 };
         verifyParallelSort(A2);
 
+        // custom test case
+        int[] A5 = {9,7,5,3,2};
+        verifyParallelSort(A5);
+
         int[] A3 = { 13, 59, 24, 18, 33, 20, 11, 11, 13, 50, 10999, 97 };
         verifyParallelSort(A3);
+
+        // custom test case
+        int[] A4 = {20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,};
+        verifyParallelSort(A4);
     }
 
     static void verifyParallelSort(int[] A) {
