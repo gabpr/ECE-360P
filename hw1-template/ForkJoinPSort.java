@@ -20,10 +20,11 @@ public class ForkJoinPSort {
         if(A.length <= 16){
             A = Arrays.copyOf(sort(A, increasing), A.length);
         }
-
-        ForkJoinPool threadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
-        Sorted toSort = new Sorted(A, begin, end, increasing); // initializing first object
-        threadPool.invoke(toSort);
+        else{
+            ForkJoinPool threadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
+            Sorted toSort = new Sorted(A, begin, end, increasing); // initializing first object
+            threadPool.invoke(toSort);
+        }
     }
     public static class Sorted extends RecursiveTask<Integer> {
         private int[] A;
@@ -43,42 +44,47 @@ public class ForkJoinPSort {
         @Override
         protected Integer compute() {
             if(this.begin >= this.end){
-                return 1;
+                return null;
             }
             if(this.A.length <= 16){
-                this.A = sort(this.A, increasing);
+                A = Arrays.copyOf(sort(this.A, increasing), A.length);
             }
             else{
-//                Sorted left = new Sorted(A, begin, )
+                int index = partition(this.A, this.begin, this.end, increasing);
+                Sorted left = new Sorted(A, begin, index - 1, increasing);
+                Sorted right = new Sorted(A, index + 1, end, increasing);
+                left.fork();
+                right.compute();
+                left.join();
             }
             return null;
         }
 
-        public int partition(){
-            int pivot = this.A[this.end];
-            int i = this.begin - 1;
-            for(int j = this.begin; j <= this.end; j++){
-                if(this.A[j] < pivot){
+        public int partition(int[] array, int begin, int end, boolean increasing){
+            int pivot = array[end - 1];
+            int i = begin - 1;
+            for(int j = begin; j <= end - 1; j++){
+                if(array[j] < pivot){
                     i++;
-                    swap(i, j);
+                    swap(array, i, j);
                 }
             }
-            swap(i + 1, end);
+            swap(array, i + 1, end - 1);
             return i + 1;
-
         }
 
-        public void quickSort(int begin, int end){
-            if(begin < end){
-                int partitionIndex = partition();
-            }
-        }
-        public void swap(int i, int j){
-                int temp = this.A[i];
-                this.A[i] = this.A[j];
-                this.A[j] = temp;
-        }
+//        public void quickSort(){
+//            if(begin < end){
+//                int partitionIndex = partition();
+//                quickSort();
+//            }
+//        }
 
+        public void swap(int[] array, int i, int j){
+                int temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+        }
     }
     // make class here
     static int[] sort(int[] arr, boolean increasing)
