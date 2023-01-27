@@ -41,6 +41,7 @@ public class SortTest {
                 printArray(sorted);
                 System.out.println("Your results:");
                 printArray(B);
+                System.out.println("\n");
                 isSuccess = false;
                 break;
             }
@@ -55,12 +56,10 @@ public class SortTest {
                 printArray(sorted);
                 System.out.println("Your results:");
                 printArray(B);
+                System.out.println("\n");
                 isSuccess = false;
                 break;
             }
-        }
-        if(isSuccess){
-            System.out.println("Your parallel sorting algorithm (forkjoin, increasing) is correct");
         }
 
         // Reverse sorted array for decreasing tests
@@ -78,6 +77,7 @@ public class SortTest {
                 System.out.println("Expect:");
                 printArray(sorted);
                 System.out.println("Your results:");
+                System.out.println("\n");
                 printArray(B);
                 isSuccess = false;
                 break;
@@ -93,14 +93,15 @@ public class SortTest {
                 printArray(sorted);
                 System.out.println("Your results:");
                 printArray(B);
+                System.out.println("\n");
                 isSuccess = false;
                 break;
             }
         }
-        //
-        isSuccess = true;
-        System.out.println("Your parallel sorting algorithm (forkjoin, decreasing) is correct");
-        //
+//        //
+//        isSuccess = true;
+//        System.out.println("Your parallel sorting algorithm (forkjoin, decreasing) is correct");
+//        //
 
         if (isSuccess) {
             System.out.println("Great, your sorting algorithm works for this test case");

@@ -11,7 +11,6 @@ public class ForkJoinPSort {
      */
     public static void parallelSort(int[] A, int begin, int end, boolean increasing) {
         // TODO: Implement your parallel sort function using ForkJoinPool
-        // fork() overrides
 
         if(begin == end){
             return;
@@ -20,7 +19,6 @@ public class ForkJoinPSort {
             ForkJoinPool threadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
             Sorted toSort = new Sorted(A, begin, end, increasing); // initializing first object
             threadPool.invoke(toSort);
-            A = toSort.getArray();
         }
     }
     public static class Sorted extends RecursiveTask<Integer> {
@@ -40,16 +38,16 @@ public class ForkJoinPSort {
 
         @Override
         protected Integer compute() {
-            if(this.begin >= this.end){
+            if(begin >= end){
                 return null;
             }
-            if(this.A.length <= 16){
+            if((end - begin) <= 16){
                 InsertionSort(A, increasing);
             }
             else{
                 int index = partition(A, begin, end, increasing);
-                Sorted left = new Sorted(A, begin, index - 1, increasing);
-                Sorted right = new Sorted(A, index+1, end, increasing);
+                Sorted left = new Sorted(A, begin, index, increasing);
+                Sorted right = new Sorted(A, index, end, increasing);
                 left.fork();
                 right.compute();
                 left.join();
@@ -63,16 +61,16 @@ public class ForkJoinPSort {
             int i = 0 ;
             if(increasing) {
                 i = begin - 1;
-                for(int j = begin; j < end; j++){
+                for(int j = begin; j <= end; j++){
                     if (array[j] < pivot) {  //move smaller elem to left of pivot
                         i++;
                         swap(array, i, j);
                     }
                 }
             }  if(!increasing) {
-                i = begin;
-                for(int j = begin; j < (end - 1); j++){
-                    if (array[j] < pivot) {  //move smaller elem to left of pivot
+                i = begin - 1;
+                for(int j = begin; j < end; j++){
+                    if (array[j] < pivot) {
                         i++;
                         swap(array, i, j);
                     }
@@ -81,13 +79,6 @@ public class ForkJoinPSort {
             swap(array, i + 1, end);
             return i + 1;
         }
-
-     /*   public void quickSort(){
-           if(begin < end){
-                int partitionIndex = partition();
-                quickSort();
-            }
-        } */
 
         public void swap(int[] array, int i, int j){
                 int temp = array[i];
@@ -114,10 +105,6 @@ public class ForkJoinPSort {
                 }
                 arr[j + 1] = key;
             }
-        }
-
-        public int[] getArray(){
-            return this.A;
         }
     }
 }
