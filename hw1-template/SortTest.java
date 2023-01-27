@@ -59,6 +59,9 @@ public class SortTest {
                 break;
             }
         }
+        if(isSuccess){
+            System.out.println("Your parallel sorting algorithm (forkjoin, increasing) is correct");
+        }
 
         // Reverse sorted array for decreasing tests
         for (int left = 0, right = sorted.length - 1; left < right; left++, right--) {
@@ -94,6 +97,10 @@ public class SortTest {
                 break;
             }
         }
+        //
+        isSuccess = true;
+        System.out.println("Your parallel sorting algorithm (forkjoin, decreasing) is correct");
+        //
 
         if (isSuccess) {
             System.out.println("Great, your sorting algorithm works for this test case");

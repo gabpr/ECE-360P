@@ -20,6 +20,7 @@ public class ForkJoinPSort {
             ForkJoinPool threadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
             Sorted toSort = new Sorted(A, begin, end, increasing); // initializing first object
             threadPool.invoke(toSort);
+            A = toSort.getArray();
         }
     }
     public static class Sorted extends RecursiveTask<Integer> {
@@ -47,7 +48,7 @@ public class ForkJoinPSort {
             }
             else{
                 int index = partition(A, begin, end, increasing);
-                Sorted left = new Sorted(A, begin, index, increasing);
+                Sorted left = new Sorted(A, begin, index - 1, increasing);
                 Sorted right = new Sorted(A, index+1, end, increasing);
                 left.fork();
                 right.compute();
@@ -78,7 +79,7 @@ public class ForkJoinPSort {
                 }
             }
             swap(array, i + 1, end);
-            return i ;
+            return i + 1;
         }
 
      /*   public void quickSort(){
@@ -99,12 +100,24 @@ public class ForkJoinPSort {
             for (int i = 1; i < n; ++i) {
                 int key = arr[i];
                 int j = i - 1;
-                while ((j >= 0) && (arr[j] > key)) {
-                    arr[j + 1] = arr[j];
-                    j = j - 1;
+                if(increasing){
+                    while ((j >= 0) && (arr[j] > key)) {
+                        arr[j + 1] = arr[j];
+                        j = j - 1;
+                    }
+                }
+                if(!increasing){
+                    while ((j >= 0) && (arr[j] < key)) {
+                        arr[j + 1] = arr[j];
+                        j = j - 1;
+                    }
                 }
                 arr[j + 1] = key;
             }
+        }
+
+        public int[] getArray(){
+            return this.A;
         }
     }
 }
