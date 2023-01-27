@@ -1,8 +1,7 @@
-//UT-EID=
+//UT-EID= rsv423,
 
 import java.util.Arrays;
 import java.util.concurrent.*;
-
 
 public class ForkJoinPSort {
     /* Notes:
@@ -16,9 +15,6 @@ public class ForkJoinPSort {
 
         if(begin == end){
             return;
-        }
-        if(A.length <= 16){
-            A = Arrays.copyOf(sort(A, increasing), A.length);
         }
         else{
             ForkJoinPool threadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
@@ -36,8 +32,8 @@ public class ForkJoinPSort {
             // need to create an object for each side so that we can call
             // fork() on each part of the array
             this.A = A;
-            this.begin = begin;
-            this.end = end;
+            this.begin = begin; //begin inclusive
+            this.end = end - 1; //end exclusive
             this.increasing = increasing;
         }
 
@@ -47,12 +43,12 @@ public class ForkJoinPSort {
                 return null;
             }
             if(this.A.length <= 16){
-                A = Arrays.copyOf(sort(this.A, increasing), A.length);
+                InsertionSort(A, increasing);
             }
             else{
-                int index = partition(this.A, this.begin, this.end, increasing);
-                Sorted left = new Sorted(A, begin, index - 1, increasing);
-                Sorted right = new Sorted(A, index + 1, end, increasing);
+                int index = partition(A, begin, end, increasing);
+                Sorted left = new Sorted(A, begin, index, increasing);
+                Sorted right = new Sorted(A, index+1, end, increasing);
                 left.fork();
                 right.compute();
                 left.join();
@@ -60,60 +56,55 @@ public class ForkJoinPSort {
             return null;
         }
 
+
         public int partition(int[] array, int begin, int end, boolean increasing){
-            int pivot = array[end - 1];
-            int i = begin - 1;
-            for(int j = begin; j <= end - 1; j++){
-                if(array[j] < pivot){
-                    i++;
-                    swap(array, i, j);
+            int pivot = array[end];
+            int i = 0 ;
+            if(increasing) {
+                i = begin - 1;
+                for(int j = begin; j < end; j++){
+                    if (array[j] < pivot) {  //move smaller elem to left of pivot
+                        i++;
+                        swap(array, i, j);
+                    }
+                }
+            }  if(!increasing) {
+                i = begin;
+                for(int j = begin; j < (end - 1); j++){
+                    if (array[j] < pivot) {  //move smaller elem to left of pivot
+                        i++;
+                        swap(array, i, j);
+                    }
                 }
             }
-            swap(array, i + 1, end - 1);
-            return i + 1;
+            swap(array, i + 1, end);
+            return i ;
         }
 
-//        public void quickSort(){
-//            if(begin < end){
-//                int partitionIndex = partition();
-//                quickSort();
-//            }
-//        }
+     /*   public void quickSort(){
+           if(begin < end){
+                int partitionIndex = partition();
+                quickSort();
+            }
+        } */
 
         public void swap(int[] array, int i, int j){
                 int temp = array[i];
                 array[i] = array[j];
                 array[j] = temp;
         }
-    }
-    // make class here
-    static int[] sort(int[] arr, boolean increasing)
-    {
-        int n = arr.length;
 
-        // One by one move boundary of unsorted subarray
-        for (int i = 0; i < n-1; i++)
-        {
-            int min_idx = i;
-            if(increasing){
-                for (int j = i+1; j < n; j++)
-                    if (arr[j] < arr[min_idx]){
-                        min_idx = j;
-                    }
+        public void InsertionSort(int[] arr, boolean increasing){
+            int n = arr.length;
+            for (int i = 1; i < n; ++i) {
+                int key = arr[i];
+                int j = i - 1;
+                while ((j >= 0) && (arr[j] > key)) {
+                    arr[j + 1] = arr[j];
+                    j = j - 1;
+                }
+                arr[j + 1] = key;
             }
-            // Find the minimum element in unsorted array
-            if(!increasing){
-                for (int j = i+1; j < n; j++)
-                    if (arr[j] > arr[min_idx]){
-                        min_idx = j;
-                    }
-            }
-            // Swap the found minimum element with the first
-            // element
-            int temp = arr[min_idx];
-            arr[min_idx] = arr[i];
-            arr[i] = temp;
         }
-        return arr;
     }
 }
