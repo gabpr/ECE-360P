@@ -30,16 +30,18 @@ public class PMerge {
 //            executor.submit(sortedA);
             Future<?> cIndex = executor.submit(new sort_arrays(A, B, C, true, i));
             System.out.println(cIndex);
-
-
         }
 
         for(int j = 0; j < B.length; j++){
             executor.submit(new sort_arrays(A, B, C, false, j));
-
         }
         // manual shutdown
         executor.shutdown();
+        try {
+            executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public static class sort_arrays implements Runnable{
@@ -60,6 +62,7 @@ public class PMerge {
         }
         @Override
         public void run(){
+            System.out.println("Thread ran");
             int indexC;
             if(compA){
                 indexC = currIndex + LowerBoundBinarySearch(B, A[currIndex]);
