@@ -9,7 +9,7 @@ public class PMerge {
      * These arrays may have different sizes.
      * Array C is the merged array sorted in the descending order
      */
-    public static void parallelMerge(int[] A, int[] B, int[] C, int numThreads) {
+    public static void parallelMerge(int[] A, int[] B, int[] C, int numThreads){
         // TODO: Implement your parallel merge function
         // use binary search
         // fixed thread pool
@@ -25,11 +25,19 @@ public class PMerge {
 //        executor.submit(toSort); // submit() can return result of computation, execute() has return type void
 
 
+//        for(int i = 0; i < A.length; i++){
+//            System.out.println(Arrays.toString(C));
+//            sort_arrays toSort = new sort_arrays(A, B, C, true, i);
+//            toSort.run();
+//        }
+//        for(int i =0; i < B.length; i++){
+//            sort_arrays toSort1 = new sort_arrays(A, B, C, false, i);
+//            toSort1.run();
+//            System.out.println(Arrays.toString(C));
+//        }
+
         for(int i = 0; i < A.length; i++){
-//            sort_arrays sortedA = new sort_arrays(A, B, C, numThreads, i);
-//            executor.submit(sortedA);
             Future<?> cIndex = executor.submit(new sort_arrays(A, B, C, true, i));
-            System.out.println(cIndex);
         }
 
         for(int j = 0; j < B.length; j++){
@@ -42,7 +50,7 @@ public class PMerge {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
+   }
 
     public static class sort_arrays implements Runnable{
         private int[] A;
@@ -62,52 +70,91 @@ public class PMerge {
         }
         @Override
         public void run(){
-            System.out.println("Thread ran");
             int indexC;
             if(compA){
                 indexC = currIndex + LowerBoundBinarySearch(B, A[currIndex]);
+                indexC = C.length - indexC - 1;
                 C[indexC] = A[currIndex];
+
             }
             if(!compA){
                 indexC = currIndex + UpperBoundBinarySearch(A, B[currIndex]);
+                indexC = C.length - indexC - 1;
                 C[indexC] = B[currIndex];
             }
         }
 
         public int LowerBoundBinarySearch(int[] arr, int elem) {
+//            int low = 0;
+//            int high = arr.length - 1;
+//            int mid = -1;
+//            while (low < high) {
+//                mid = low + (high - low + 1)/2;
+//                if (arr[mid] >= elem) {
+//                    return mid;
+//                }
+//                else if (elem > arr[mid]){
+//                    low = mid + 1 ;
+//                }else{
+//                    high = mid;
+//                }
+//            }
+//            return mid;
+
             int low = 0;
             int high = arr.length - 1;
-            int mid = -1;
-            while (low < high) {
-                mid = (low + high) / 2;
-                if (arr[mid] >= elem) {
-                    return mid;
+            int mid;
+            while(low < high){
+                mid = low + (high - low) / 2;
+                if (elem > arr[mid]){
+                    low = mid + 1;
                 }
-                else if (elem > arr[mid]){
-                    low = mid + 1 ;
-                }else{
+                else{
                     high = mid;
                 }
             }
-            return mid;
+
+            if((low <= (arr.length - 1)) && arr[low] < elem){
+                low++;
+            }
+
+            return low;
         }
         public int UpperBoundBinarySearch(int[] arr, int elem){
+//            int low = 0;
+//            int high = arr.length - 1;
+//            int mid = -1 ;
+//            while (low < high) {
+//                mid = low + (high-low)/2;
+//                if (arr[mid] >= elem) {
+//                    return mid;
+//                }
+//                else if (elem > arr[mid]){
+//                    low = mid;
+//                }else{
+//                    high = mid - 1;
+//                }
+//            }
+//            return mid;
             int low = 0;
             int high = arr.length - 1;
-            int mid = -1 ;
-            while (low < high) {
-                mid = low + (high-low)/2;
-                if (arr[mid] == elem) {
-                    return mid;
+            int mid;
+
+            while(low < high){
+                mid = low + (high - low) / 2;
+                if(elem < arr[mid]){
+                    high = mid;
                 }
-                else if (elem > arr[mid]){
-                    low = mid;
-                }else{
-                    high = mid - 1;
+                else{
+                    low = mid + 1;
                 }
             }
-            return mid;
+            if(low <= (arr.length - 1) && arr[low] <= elem){
+                low++;
+            }
+            return low;
         }
+
     }
 }
 

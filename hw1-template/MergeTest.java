@@ -11,6 +11,14 @@ public class MergeTest {
         int[] A3 = { 0, 1, 2 };
         int[] B3 = { 0, 1, 2 };
         verifyParallelMerge(A3, B3, 10);
+
+        int[] A4 = {0,1};
+        int[] B4 = {2,3};
+        verifyParallelMerge(A4, B4, 10);
+
+        int[] A5 = {0,1};
+        int[] B5 = {2,3};
+        verifyParallelMerge(A5, B5, 2);
     }
 
     static void verifyParallelMerge(int[] A, int[] B, int numThreads) {
