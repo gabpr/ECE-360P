@@ -21,11 +21,23 @@ public class PMerge {
 
         // create the main task, sort_arrays
         // this is the initial call
-        sort_arrays toSort = new sort_arrays(A, B, C, numThreads);
-        executor.submit(toSort); // submit() can return result of computation, execute() has return type void
+//        sort_arrays toSort = new sort_arrays(A, B, C, numThreads, );
+//        executor.submit(toSort); // submit() can return result of computation, execute() has return type void
 
-        //submit task for A vs B specifically
-        // num threads vs A.length
+
+        for(int i = 0; i < A.length; i++){
+//            sort_arrays sortedA = new sort_arrays(A, B, C, numThreads, i);
+//            executor.submit(sortedA);
+            Future<?> cIndex = executor.submit(new sort_arrays(A, B, C, true, i));
+            System.out.println(cIndex);
+
+
+        }
+
+        for(int j = 0; j < B.length; j++){
+            executor.submit(new sort_arrays(A, B, C, false, j));
+
+        }
         // manual shutdown
         executor.shutdown();
     }
@@ -34,45 +46,60 @@ public class PMerge {
         private int[] A;
         private int[] B;
         private int[] C;
-        private int tNum; //which number thread
+        private boolean compA; //which number thread
+        private int currIndex;
 
-        public sort_arrays(int[] A, int[]B, int[] C, int tNum, boolean compA, int idx){
+        public sort_arrays(int[] A, int[]B, int[] C, boolean compA, int currIndex){
             // need to create an object for each side so that we can call
             // fork() on each part of the array
             this.A = A;
             this.B = B;
             this.C = C;
-            this.tNum = tNum;
-
+            this.compA = compA;
+            this.currIndex = currIndex;
         }
         @Override
         public void run(){
-            if(compA){ //compare thread number to
-
-                //if comparing A to b
-                //for loop? --- move for loop to main, submit new task for each index
-                // index C = upper bin search result(B, A[i])+ i
-                //c(index C) = A[i]
+            int indexC;
+            if(compA){
+                indexC = currIndex + LowerBoundBinarySearch(B, A[currIndex]);
+                C[indexC] = A[currIndex];
             }
-            //if B to A
-            // for loop
-            // index C = lower bin search result(A, B[i]) + i
-            //c(index C) = B[i]
-
+            if(!compA){
+                indexC = currIndex + UpperBoundBinarySearch(A, B[currIndex]);
+                C[indexC] = B[currIndex];
+            }
         }
 
-        public int binarySearch(int[] arr, int elem) { //modify so that it returns the index of where
+        public int LowerBoundBinarySearch(int[] arr, int elem) {
+            int low = 0;
+            int high = arr.length - 1;
+            int mid = -1;
+            while (low < high) {
+                mid = (low + high) / 2;
+                if (arr[mid] >= elem) {
+                    return mid;
+                }
+                else if (elem > arr[mid]){
+                    low = mid + 1 ;
+                }else{
+                    high = mid;
+                }
+            }
+            return mid;
+        }
+        public int UpperBoundBinarySearch(int[] arr, int elem){
             int low = 0;
             int high = arr.length - 1;
             int mid = -1 ;
-            while (low != high) {
-                mid = (low + high) / 2;
+            while (low < high) {
+                mid = low + (high-low)/2;
                 if (arr[mid] == elem) {
                     return mid;
                 }
-                if (elem > arr[mid]){
-                    low = mid +1 ;
-                }else if(elem < arr[mid]){
+                else if (elem > arr[mid]){
+                    low = mid;
+                }else{
                     high = mid - 1;
                 }
             }
