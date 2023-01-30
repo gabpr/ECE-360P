@@ -24,6 +24,8 @@ public class PMerge {
         sort_arrays toSort = new sort_arrays(A, B, C, numThreads);
         executor.submit(toSort); // submit() can return result of computation, execute() has return type void
 
+        //submit task for A vs B specifically
+        // num threads vs A.length
         // manual shutdown
         executor.shutdown();
     }
@@ -34,7 +36,7 @@ public class PMerge {
         private int[] C;
         private int tNum; //which number thread
 
-        public sort_arrays(int[] A, int[]B, int[] C, int tNum){
+        public sort_arrays(int[] A, int[]B, int[] C, int tNum, boolean compA, int idx){
             // need to create an object for each side so that we can call
             // fork() on each part of the array
             this.A = A;
@@ -45,9 +47,17 @@ public class PMerge {
         }
         @Override
         public void run(){
-            if(tNum < A.length){ //compare thread number to
+            if(compA){ //compare thread number to
 
+                //if comparing A to b
+                //for loop? --- move for loop to main, submit new task for each index
+                // index C = upper bin search result(B, A[i])+ i
+                //c(index C) = A[i]
             }
+            //if B to A
+            // for loop
+            // index C = lower bin search result(A, B[i]) + i
+            //c(index C) = B[i]
 
         }
 
