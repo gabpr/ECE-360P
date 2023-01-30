@@ -20,16 +20,22 @@ public class PMerge {
         private int[] A;
         private int[] B;
         private int[] C;
+        private int tNum; //which number thread
 
-        public sorted_arrays(int[] A, int[]B, int[] C){
+        public sorted_arrays(int[] A, int[]B, int[] C, int tNum){
             // need to create an object for each side so that we can call
             // fork() on each part of the array
             this.A = A;
             this.B = B;
             this.C = C;
+            this.tNum = tNum;
+
         }
         @Override
         public void run(){
+            if(tNum < A.length){ //compare thread number to
+
+            }
 
         }
 
