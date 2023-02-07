@@ -13,11 +13,14 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
     // TODO Add other useful variables
 
     private boolean barrierActive;
-    private Semaphore flag = new Semaphore(parties);
-    private int activeParties;
+    private Semaphore flag;
+    private int total;
+    private int index = 0;
 
     public SemaphoreCyclicBarrier(int parties) {
         this.parties = parties;
+        this.flag = new Semaphore(0); // initialize with 0 permits so that the threads have to wait
+        this.total = 0;
         // TODO Add any other initialization statements
     }
 
@@ -32,34 +35,32 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
      * indicates the first to arrive and (parties-1) indicates
      * the last to arrive.
      */
-    public int await() throws InterruptedException { // how we indicate a certain thread has reached their barrier?
+    public int await() throws InterruptedException {
         // TODO Implement this function
-        // when a thread calls this method, it gets blocked until
-        // until the number of parties have also called await
 
-        // when all parties have called await all threads are released
-//        try{
-//            flag.acquire();
-//        }catch (InterruptedException e) {
-//
-//            // Print and display the line number where
-//            // exception occurred
-//            e.printStackTrace();
-//        }
-//        finally{
-//            while(flag.availablePermits() != 0){
-//                flag.release();
-//            }
-//
-//        }
-        flag.acquire();
-        activeParties++;
-        if(activeParties == parties){
-            flag.release(parties);
+        // save index of which thread has arrived
+        int currIndex = index;
+
+        // each time a party calls await(), total is incremented by 1
+        // when total == parties, the last thread has arrived and all threads have reached the barrier and are waiting
+        if(++total == parties){
+            // semaphore is released with parties - 1 permits to unblock all the waiting parties
+            // allows them to continue executing
+
+            // parties - 1 because all prev. threads acquired() so the are waiting for permit. last thread
+            // did not enter the else block so it is not waiting. therefore we need parties - 1 permits
+            flag.release(parties - 1);
+
+            // reset everything so that CyclicBarrier can be used again
+            total = 0;
+            index = 0;
         }
-        // ask about arrival index
-
-        return -1;
+        else{
+            index++;
+            flag.acquire();
+        }
+        return currIndex;
+        
     }
 
     /*
