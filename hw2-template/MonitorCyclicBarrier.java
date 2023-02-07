@@ -5,10 +5,15 @@
 public class MonitorCyclicBarrier implements CyclicBarrier {
 
     private int parties;
+    private int count;
+    private final Object lock = new Object();
+    private int index = 0;
+    private boolean barrierState;
     // TODO Add other useful variables
 
     public MonitorCyclicBarrier(int parties) {
         this.parties = parties;
+        this.barrierState = false;
         // TODO Add any other initialization statements
     }
 
@@ -25,7 +30,17 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
      */
     public int await() throws InterruptedException {
         // TODO Implement this function
-        return -1;
+
+        int currIndex = index;
+        synchronized (lock) {
+            count--;
+            if(count == 0){
+                lock.notifyAll();
+                count = parties;
+            }
+            lock.wait();
+        }
+        return currIndex;
     }
 
     /*
@@ -36,6 +51,11 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
      */
     public void activate() throws InterruptedException {
         // TODO Implement this function
+
+        if(count == 0){
+            barrierState = true;
+            await();
+        }
     }
 
     /*

@@ -9,8 +9,7 @@
       <change beforePath="$PROJECT_DIR$/../hw1-template/PMerge.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hw1-template/PMerge.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hw1-template/RunnablePSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hw1-template/RunnablePSort.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CyclicBarrierTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/CyclicBarrierTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PriorityQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/PriorityQueue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MonitorCyclicBarrier.java" beforeDir="false" afterPath="$PROJECT_DIR$/MonitorCyclicBarrier.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SemaphoreCyclicBarrier.java" beforeDir="false" afterPath="$PROJECT_DIR$/SemaphoreCyclicBarrier.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -67,16 +66,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/CyclicBarrierTest.java</url>
-          <line>151</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
