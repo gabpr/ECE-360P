@@ -12,7 +12,6 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
     private int parties; // threads that need to synchronize their execution
     // TODO Add other useful variables
 
-    private boolean barrierActive;
     private Semaphore flag;
     private int total;
     private int index = 0;
@@ -60,7 +59,6 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
             flag.acquire();
         }
         return currIndex;
-        
     }
 
     /*
@@ -71,11 +69,18 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
      */
     public void activate() throws InterruptedException {
         // TODO Implement this function
-        if(!this.barrierActive){
-            this.barrierActive = true;
-            // reset to its initial value?
-        }
 
+        // CyclicBarrier is in the active state when total == parties
+        // if total < parties, CyclicBarrier is in the reset state
+        // that means it's not in active state and is ready for the next set of parties to reach the barrier
+
+
+        // initial value of the barrier is the number of parties it was initialized with
+        // init value = 5 if parties = 5
+        if(total < parties){
+            total = 0;
+            await(); // ??
+        }
     }
 
     /*
@@ -84,5 +89,7 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
      */
     public void deactivate() throws InterruptedException {
         // TODO Implement this function
+        flag.drainPermits();
+        total = 0;
     }
 }
