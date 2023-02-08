@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78a30eee-a204-4e1a-b224-e2f73284ba12" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../hw1-template/ForkJoinPSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hw1-template/ForkJoinPSort.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hw1-template/PMerge.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hw1-template/PMerge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../hw1-template/RunnablePSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hw1-template/RunnablePSort.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MonitorCyclicBarrier.java" beforeDir="false" afterPath="$PROJECT_DIR$/MonitorCyclicBarrier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FairUnifanBathroom.java" beforeDir="false" afterPath="$PROJECT_DIR$/FairUnifanBathroom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PriorityQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/PriorityQueue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SemaphoreCyclicBarrier.java" beforeDir="false" afterPath="$PROJECT_DIR$/SemaphoreCyclicBarrier.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

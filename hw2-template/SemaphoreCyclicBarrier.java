@@ -14,13 +14,12 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
 
     private Semaphore flag;
     private boolean barrierState;
-    private boolean deactivate;
     private int total;
     private int index = 0;
 
     public SemaphoreCyclicBarrier(int parties) {
         this.parties = parties;
-        this.flag = new Semaphore(parties); // initialize with 0 permits so that the threads have to wait
+        this.flag = new Semaphore(0); // initialize with 0 permits so that the threads have to wait
         this.total = 0;
         this.barrierState = false;
         // TODO Add any other initialization statements
@@ -52,7 +51,7 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
 
             // parties - 1 because all prev. threads acquired() so the are waiting for permit. last thread
             // did not enter the else block so it is not waiting. therefore we need parties - 1 permits
-            flag.release(parties);
+            flag.release(parties - 1);
 
             // reset everything so that CyclicBarrier can be used again
             total = 0;

@@ -16,7 +16,7 @@ public class FairUnifanBathroom {
         ticketNum++; //increment whos in the line
 		lineCount++;
         while ((!longhornOnly && !isEmpty) || (bathroomNum == 7) || (ticketNum > lineCount)) { //if not empty and OU in the bathroom or line full
-            wait();
+            //wait();
         }
         numhorns++;
         bathroomNum++; //allow longhorn to enter, inc num ppl in bathroom
@@ -30,7 +30,7 @@ public class FairUnifanBathroom {
         ticketNum++; //increment whos in the line
 		lineCount++;
         while ((!isEmpty && longhornOnly) || (bathroomNum == 7)) { //if UT in the bathroom and its not empty or line full wait
-            wait();
+           // wait();
         }
         numsooners++;
         bathroomNum++; //allow OU to enter, inc num ppl in bathroom
