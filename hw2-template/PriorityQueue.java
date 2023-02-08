@@ -25,7 +25,7 @@ public class PriorityQueue {
 			count++;
 		}
 		while(count == (maxSize -1)){
-			wait(); //can i do this??? - reva
+		//	wait(); //can i do this??? - reva
 		}
 
 		return -1;
@@ -50,7 +50,7 @@ public class PriorityQueue {
 		public int priority;
 		public Node next;
 
-		public Node(name, priority){
+		public Node(String name, int priority){
 			this.name = name;
 			this.priority = priority;
 			this.next = null;
