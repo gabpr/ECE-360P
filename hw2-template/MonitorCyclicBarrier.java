@@ -38,7 +38,9 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
                 lock.notifyAll();
                 count = parties;
             }
-            lock.wait();
+            if (count < parties) {
+                lock.wait();
+            }
         }
         return currIndex;
     }
