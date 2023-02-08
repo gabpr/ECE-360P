@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78a30eee-a204-4e1a-b224-e2f73284ba12" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/FairUnifanBathroom.java" beforeDir="false" afterPath="$PROJECT_DIR$/FairUnifanBathroom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PriorityQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/PriorityQueue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SemaphoreCyclicBarrier.java" beforeDir="false" afterPath="$PROJECT_DIR$/SemaphoreCyclicBarrier.java" afterDir="false" />
-    </list>
+    <list default="true" id="78a30eee-a204-4e1a-b224-e2f73284ba12" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
