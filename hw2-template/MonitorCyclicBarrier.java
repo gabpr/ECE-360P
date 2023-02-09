@@ -1,19 +1,22 @@
 // EID 1
 // EID 2
 
+
+import jdk.jshell.execution.Util;
+
+import javax.management.monitor.Monitor;
+
 /* Use only Java monitors to accomplish the required synchronization */
 public class MonitorCyclicBarrier implements CyclicBarrier {
 
     private int parties;
-    private int count;
-    private final Object lock = new Object();
     private int index = 0;
-    private boolean barrierState;
+    private boolean barrierState = true;
+    private final Object lock = new Object();
     // TODO Add other useful variables
 
     public MonitorCyclicBarrier(int parties) {
         this.parties = parties;
-        this.barrierState = false;
         // TODO Add any other initialization statements
     }
 
@@ -30,16 +33,19 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
      */
     public int await() throws InterruptedException {
         // TODO Implement this function
-
-        int currIndex = index;
-        synchronized (lock) {
-            count--;
-            if(count == 0){
-                lock.notifyAll();
-                count = parties;
-            }
-            if (count < parties) {
-                lock.wait();
+        int currIndex;
+        synchronized (lock){
+            currIndex = index;
+            index++;
+            if(barrierState) {
+                if (index == parties) {
+                    // all parties have reached barrier so now they can continue
+                    lock.notifyAll();
+                    index = 0;
+                } else {
+                    // if not last thread then it lies dormant
+                    lock.wait();
+                }
             }
         }
         return currIndex;
@@ -53,10 +59,12 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
      */
     public void activate() throws InterruptedException {
         // TODO Implement this function
-
-        if(count == 0){
-            barrierState = true;
-            await();
+        synchronized (lock){
+            if(!barrierState){
+                barrierState = true;
+                lock.notifyAll();
+                index = 0;
+            }
         }
     }
 
@@ -66,5 +74,11 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
      */
     public void deactivate() throws InterruptedException {
         // TODO Implement this function
+        synchronized (lock){
+            if(barrierState){
+                barrierState = false;
+                lock.notifyAll();
+            }
+        }
     }
 }

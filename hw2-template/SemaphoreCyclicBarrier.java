@@ -97,7 +97,6 @@ public class SemaphoreCyclicBarrier implements CyclicBarrier {
         mutex.acquire();
         if(barrierState){
             barrierState = false;
-
             // release any permits being used
             flag.release(parties - flag.availablePermits());
         }

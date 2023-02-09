@@ -43,21 +43,20 @@ public class CyclicBarrierTest implements Runnable {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		
+
 		int numRounds = 20;
 
 		CyclicBarrier barrier;
 		// if (args[0].startsWith("s"))
-		// 	barrier = new SemaphoreCyclicBarrier(numParties);
+		// barrier = new SemaphoreCyclicBarrier(numParties);
 		// else
-		barrier = new SemaphoreCyclicBarrier(numParties);
-		// barrier = new MonitorCyclicBarrier(numParties);
+		barrier = new MonitorCyclicBarrier(numParties);
 
 		Thread[] t = new Thread[numParties];
 
 
 
-		
+
 		/*
 		 * 1. ACTIVE BARRIER
 		 * Many threads run in parallel
@@ -86,8 +85,8 @@ public class CyclicBarrierTest implements Runnable {
 		/*
 		 * 2. DEACTIVATED BARRIER
 		 * The barrier is deactivated
-		 * Many threads run in parallel 
-		 * Each thread iterates and calls barrier.await() a distinct number of times. 
+		 * Many threads run in parallel
+		 * Each thread iterates and calls barrier.await() a distinct number of times.
 		 * With an active barrier - the running threads will wait forever since not enough threads can reach the barrier in later rounds
 		 * With a deactivated barrier - this should work fine
 		 */
@@ -105,14 +104,14 @@ public class CyclicBarrierTest implements Runnable {
 
 
 
-		/* 
+		/*
 		 * 3. MIDWAY BARRIER DEACTIVATION
 		 * The barrier is reactivated.
-		 * Many threads run in parallel 
-		 * Each thread iterates and calls barrier.await() a distinct number of times - with an active barrier the threads would block forever. 
+		 * Many threads run in parallel
+		 * Each thread iterates and calls barrier.await() a distinct number of times - with an active barrier the threads would block forever.
 		 * Before waiting for the threads to complete - the barrier is deactivated
-		 * Deactivation should 
-		 * 		a. nullify the barrier, 
+		 * Deactivation should
+		 * 		a. nullify the barrier,
 		 * 		b. release any waiting threads
 		 * If the barrier is deactivated as expected - the threads should be able to execute to completion
 		 */
