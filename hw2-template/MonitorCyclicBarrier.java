@@ -1,10 +1,18 @@
 // EID 1
 // EID 2
 
+
+import jdk.jshell.execution.Util;
+
+import javax.management.monitor.Monitor;
+
 /* Use only Java monitors to accomplish the required synchronization */
 public class MonitorCyclicBarrier implements CyclicBarrier {
 
     private int parties;
+    private int index = 0;
+    private boolean barrierState = true;
+    private final Object lock = new Object();
     // TODO Add other useful variables
 
     public MonitorCyclicBarrier(int parties) {
@@ -25,7 +33,22 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
      */
     public int await() throws InterruptedException {
         // TODO Implement this function
-        return -1;
+        int currIndex;
+        synchronized (lock){
+            currIndex = index;
+            index++;
+            if(barrierState) {
+                if (index == parties) {
+                    // all parties have reached barrier so now they can continue
+                    lock.notifyAll();
+                    index = 0;
+                } else {
+                    // if not last thread then it lies dormant
+                    lock.wait();
+                }
+            }
+        }
+        return currIndex;
     }
 
     /*
@@ -36,6 +59,13 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
      */
     public void activate() throws InterruptedException {
         // TODO Implement this function
+        synchronized (lock){
+            if(!barrierState){
+                barrierState = true;
+                lock.notifyAll();
+                index = 0;
+            }
+        }
     }
 
     /*
@@ -44,5 +74,11 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
      */
     public void deactivate() throws InterruptedException {
         // TODO Implement this function
+        synchronized (lock){
+            if(barrierState){
+                barrierState = false;
+                lock.notifyAll();
+            }
+        }
     }
 }
