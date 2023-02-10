@@ -61,8 +61,9 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
         // TODO Implement this function
         synchronized (lock){
             if(!barrierState){
-                barrierState = true;
+                //barrierState = true;
                 lock.notifyAll();
+                barrierState = true;
                 index = 0;
             }
         }
@@ -76,8 +77,9 @@ public class MonitorCyclicBarrier implements CyclicBarrier {
         // TODO Implement this function
         synchronized (lock){
             if(barrierState){
-                barrierState = false;
+                //barrierState = false;
                 lock.notifyAll();
+                barrierState = false;
             }
         }
     }
