@@ -10,17 +10,27 @@ public class PriorityQueue {
 		private String name;
 		private Node next;
 		private ReentrantLock nodeLock;
+		private boolean lockstatus;
 
 		public Node(String name, int priority){
 			this.name = name;
 			this.priority = priority;
 			this.nodeLock = new ReentrantLock();
 		}
+
+		public void lockStatus(){
+			if(nodeLock.isLocked()){
+				lockstatus = true;
+			}else{
+				lockstatus = false;
+			}
+			System.out.println(name + lockstatus);
+		}
 	}
 
 	private LinkedList<Node> linkedList;
 	private final int maxSize;
-	private ReentrantLock lock = new ReentrantLock();
+	private ReentrantLock lock;
 	Node head;
 	Node tail;
 	private int size;
@@ -38,7 +48,7 @@ public class PriorityQueue {
 		tail = new Node("tail", 10);
 		head.next = tail;
 		tail.next = null;
-		lock.lock();
+		lock = new ReentrantLock();
 		notEmpty = lock.newCondition();
 		notFull = lock.newCondition();
 	}
@@ -61,6 +71,7 @@ public class PriorityQueue {
 		// unlock head, lock tail
 
 		// lock node we're inserting
+		System.out.println(head.nodeLock.isLocked());
 		head.nodeLock.lock();
 		head.next.nodeLock.lock();
 		Node newNode = new Node(name, priority);
@@ -73,19 +84,24 @@ public class PriorityQueue {
 			head.nodeLock.unlock();
 			tail.nodeLock.unlock();
 			newNode.nodeLock.unlock();
-			lock.unlock();
+			lock.lock();
 			size++;
 			notEmpty.signal();
-			lock.lock();
+			lock.unlock();
+			System.out.println("added node " + name + " with priority " + priority);
+			System.out.println(name + "points to" + newNode.next.name);
 			return 0;
 		}
 
-
-		int index = 0;
+		int index = -1;
 		//Node prevNode = null;
 		Node nextNode = head.next;
 		Node temp = null;
 		Node currNode = head;
+		nextNode = currNode.next;
+
+		currNode.nodeLock.lock();
+		nextNode.nodeLock.lock();
 
 		// find the index of where the priority
 		// curr node no longer valid, duplicate, full
@@ -99,17 +115,7 @@ public class PriorityQueue {
 			}
 		}
 
-		// lock the current node and next node
-		nextNode = currNode.next;
-		currNode.nodeLock.lock();
-		nextNode.nodeLock.lock();
-
 		while(currNode != tail){
-			// lock .next
-			// if first == second
-			// first.next = newNode
-			//node.next = tail
-			// unlock first and second
 			try{
 				if(currNode.name.equals(name)){  //if the object already exists in the list
 					currNode.nodeLock.unlock();
@@ -118,68 +124,117 @@ public class PriorityQueue {
 				}
 				if((currNode.priority < priority)  && (nextNode.priority > priority)){
 					//there is a space to insert, but check for duplicates
+					index++;
 					break;
 				}
 				else{
-					currNode.nodeLock.unlock(); //release curr node
-					temp = nextNode.next; //get the one to hand over
-					currNode = nextNode; //update the current node to be next
-					nextNode = temp;
-					nextNode.nodeLock.lock(); //lock the "new" next node
+					if(nextNode != tail){
+						currNode.nodeLock.unlock(); //release curr node
+						temp = nextNode.next; //get the one to hand over
+						currNode = nextNode; //update the current node to be next
+						nextNode = temp;
+						nextNode.nodeLock.lock(); //lock the "new" next node
+					}
+					else{
+						currNode.nodeLock.unlock();
+						currNode = nextNode;
+					}
 				}
-			} finally {
-				currNode.nodeLock.unlock();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
 		}
 
 		//this while loop actually inserts the node if no duplicate
-		Node left = nextNode;
-		Node right= nextNode.next;
-		right.nodeLock.lock();
+		if(nextNode != tail){
+			Node left = nextNode;
+			Node right= nextNode.next;
+			right.nodeLock.lock();
+			left.nodeLock.lock();
 
-		while(right != tail){
-			if(left.name.equals(name)){ //release everything and leave
-				currNode.nodeLock.unlock();
-				left.nodeLock.unlock();
-				right.nodeLock.unlock();
-				return -1;
+			while(right != tail){
+				if(left.name.equals(name)){ //release everything and leave
+					currNode.nodeLock.unlock();
+					left.nodeLock.unlock();
+					right.nodeLock.unlock();
+					return -1;
+				}
+				else{
+					left.nodeLock.unlock();
+					temp = right.next;
+					left = right;
+					right = temp;
+					right.nodeLock.lock();
+				}
 			}
-			else{
-				left.nodeLock.unlock();
-				temp = right.next;
-				left = right;
-				right = temp;
-				right.nodeLock.lock();
-			}
+			right.nodeLock.unlock();
+			left.nodeLock.unlock();
 		}
-		right.nodeLock.unlock(); // unlock last node
 
 		Node second = currNode.next; // node right next to where the newNode will be inserted
 		second.nodeLock.lock(); //lock the two nodes btwn which new node will be inserted
 		currNode.next = newNode;
 		newNode.next = second;
+		System.out.println(name + "points to" + newNode.next.name);
+		System.out.println("added node " + name + " with priority " + priority);
 		currNode.nodeLock.unlock();
 		newNode.nodeLock.unlock();
 		second.nodeLock.unlock();
-		lock.unlock();
-		size++;
-		newNode.
+		head.nodeLock.unlock();
+		head.next.nodeLock.unlock();
+		tail.nodeLock.unlock();
 		lock.lock();
+		size++;
+		notEmpty.signal();
+		lock.unlock();
 
-
-		newNode.notEmpty.signal();
 		return index;
 	}
 
 	public int search(String name) {
         // Returns the position of the name in the list;
         // otherwise, returns -1 if the name is not found.
-		return -1;
+
+		head.nodeLock.lock();
+		head.next.nodeLock.lock();
+
+		Node currNode = head;
+		Node nextNode = head.next;
+		currNode.nodeLock.lock();
+		nextNode.nodeLock.lock();
+
+		// index is local so we don't have to lock
+		// init to -1 because of the dummy head node
+		int index = -1;
+
+		while(currNode != tail){
+			if(currNode.name.equals(name)){
+				currNode.nodeLock.unlock();
+				nextNode.nodeLock.unlock();
+				return index;
+			}
+			else{
+				currNode.nodeLock.unlock();
+				Node temp = nextNode.next;
+				currNode = nextNode;
+				nextNode = temp;
+				index++;
+			}
+		}
+		return index;
 	}
 
 	public String getFirst() {
         // Retrieves and removes the name with the highest priority in the list,
         // or blocks the thread if the list is empty.
+
+		// the one right before the tail is the name with the highest priority in the list
+		head.nodeLock.lock();
+		head.next.nodeLock.lock();
+
+		Node currNode = head;
+		Node nextNode = head.next;
+
 		return "";
 	}
 }
